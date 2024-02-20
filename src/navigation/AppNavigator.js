@@ -10,16 +10,16 @@ const AppNavigator = () => {
     return (
       <NavigationContainer>
         <Stack.Navigator>
-            {/* <Stack.Screen
+            <Stack.Screen
                 name="HomeScreen"
                 component={HomeScreen}
                 options={{ headerShown: false }}
-            /> */}
-            <Stack.Screen
+            />
+            {/* <Stack.Screen
                 name="IntroScreen"
                 component={IntroScreen}
                 options={{ headerShown: false }}
-            />
+            /> */}
         </Stack.Navigator>
       </NavigationContainer>
     );
