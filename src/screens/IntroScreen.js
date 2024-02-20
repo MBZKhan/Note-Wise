@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   introText: {
-    fontSize: 18,
+    fontSize: 20,
     marginBottom: 20,
     color:  colors.DARK,
   },
