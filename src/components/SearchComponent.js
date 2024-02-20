@@ -17,7 +17,7 @@ const SearchComponent = ({ searchText, handleSearch }) => {
 
 const styles = StyleSheet.create({
   searchContainer: {
-    marginTop: 20,
+    marginTop: 5,
     paddingHorizontal: 20,
     width: '90%',
     alignSelf: 'center',

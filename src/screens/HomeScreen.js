@@ -30,7 +30,10 @@ const HomeScreen = () => {
           {greeting}, {name}
         </Text>
       </View>
-      <SearchComponent searchText={searchText} handleSearch={handleSearch} />{/* Use the SearchComponent */}
+      <SearchComponent searchText={searchText} handleSearch={handleSearch} />
+      <View style={styles.centeredTextContainer}>
+        <Text style={styles.centeredText}>ADD NOTES</Text>
+      </View>
     </View>
   );
 };
@@ -39,19 +42,32 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'flex-start',
-    backgroundColor: colors.DARK,
     padding: 20,
   },
   greetingContainer: {
     marginBottom: 20,
     marginTop: 30,
-    backgroundColor: colors.PRIMARY,
     marginHorizontal: 20,
   },
   greetingText: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: colors.LIGHT,
+    color: colors.DARK,
+  },
+  centeredTextContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  centeredText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    opacity: 0.5,
   },
 });
 
