@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Dimensions } from 'react-native';
+import colors from '../misc/GlobalStyles';
 
 const IntroScreen = () => {
   const [name, setName] = useState('');
@@ -33,13 +34,17 @@ const styles = StyleSheet.create({
   introText: {
     fontSize: 18,
     marginBottom: 20,
+    color:  colors.DARK,
   },
   input: {
     height: 40,
     width: Dimensions.get('window').width - 80, 
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 5,
+    color: colors.PRIMARY,
+    fontSize: 20,
+    borderColor: colors.PRIMARY,
+    borderWidth: 2,
+    borderRadius: 10,
+    height: 50,
     paddingHorizontal: 10,
     marginBottom: 20,
   },
