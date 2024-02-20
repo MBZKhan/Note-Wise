@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import colors from '../misc/GlobalStyles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import SearchComponent from '../components/SearchComponent';
 
 const HomeScreen = () => {
@@ -16,7 +17,22 @@ const HomeScreen = () => {
     greeting = 'Good Evening';
   }
 
-  const name = 'Muhammad Bilal Zahid Khan';
+  const [name, setName] = useState('');
+
+  useEffect(() => {
+    loadName();
+  }, []);
+
+  const loadName = async () => {
+    try {
+      const storedName = await AsyncStorage.getItem('name');
+      if (storedName !== null) {
+        setName(storedName);
+      }
+    } catch (error) {
+      console.error('Error loading name:', error);
+    }
+  };
 
   const [searchText, setSearchText] = useState('');
 
@@ -32,7 +48,7 @@ const HomeScreen = () => {
     <View style={styles.container}>
       <View style={styles.greetingContainer}>
         <Text style={styles.greetingText}>
-          {greeting}, {name}
+          {greeting}, {name ? name : 'Friend'}
         </Text>
       </View>
       <SearchComponent searchText={searchText} handleSearch={handleSearch} />
