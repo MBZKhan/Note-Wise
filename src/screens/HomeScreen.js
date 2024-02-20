@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import colors from '../misc/GlobalStyles';
 import SearchComponent from '../components/SearchComponent';
 
@@ -23,6 +24,10 @@ const HomeScreen = () => {
     setSearchText(text);
   };
 
+  const handleAddNote = () => {
+    console.log('Adding note...');
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.greetingContainer}>
@@ -34,6 +39,9 @@ const HomeScreen = () => {
       <View style={styles.centeredTextContainer}>
         <Text style={styles.centeredText}>ADD NOTES</Text>
       </View>
+      <TouchableOpacity style={styles.addButton} onPress={handleAddNote}>
+        <Icon name="plus" size={24} color="white" />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -56,18 +64,26 @@ const styles = StyleSheet.create({
   },
   centeredTextContainer: {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
+    top: '60%',
+    left: '50%',
+    transform: [{ translateX: -50 }, { translateY: -50 }],
   },
   centeredText: {
     fontSize: 24,
     fontWeight: 'bold',
     textTransform: 'uppercase',
     opacity: 0.5,
+  },
+  addButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: colors.PRIMARY,
+    borderRadius: 30,
+    width: 60,
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
