@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome'; // Import the icon component you want to use
+import Icon from 'react-native-vector-icons/FontAwesome'; 
 import colors from '../misc/GlobalStyles';
 
-const IntroScreen = ({ navigation }) => { // Assuming you're using navigation props for navigation
+const IntroScreen = () => { 
   const [name, setName] = useState('');
 
   const handleContinue = () => {
     console.log('Name entered:', name);
-    // Navigate to the next screen here
-    // Example: navigation.navigate('NextScreen');
   };
 
   return (
