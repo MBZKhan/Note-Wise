@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { Modal, View, Text, TextInput, Button, StyleSheet, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import colors from '../misc/GlobalStyles';
 
 const NoteModal = ({ visible, onClose, onSave }) => {
@@ -13,6 +13,10 @@ const NoteModal = ({ visible, onClose, onSave }) => {
     onClose();
   };
 
+  const dismissKeyboard = () => {
+    Keyboard.dismiss();
+  };
+
   return (
     <Modal
       animationType="slide"
@@ -20,29 +24,34 @@ const NoteModal = ({ visible, onClose, onSave }) => {
       visible={visible}
       onRequestClose={onClose}
     >
-      <View style={styles.modalContainer}>
-        <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Add Note</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Title"
-            value={title}
-            onChangeText={setTitle}
-          />
-          <TextInput
-            style={[styles.input, styles.descriptionInput]} // Modified style for the description input
-            placeholder="Description"
-            multiline={true}
-            textAlignVertical="top" // Allows the text to wrap and grow vertically
-            value={description}
-            onChangeText={setDescription}
-          />
-          <View style={styles.buttonContainer}>
-            <Button title="Cancel" onPress={onClose} color="#888" />
-            <Button title="Save" onPress={handleSave} />
+      <TouchableWithoutFeedback onPress={dismissKeyboard}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Add Note</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Title"
+              value={title}
+              onChangeText={setTitle}
+            />
+            <ScrollView style={styles.descriptionScrollView}>
+              <TextInput
+                style={[styles.input, styles.descriptionInput]}
+                placeholder="Description"
+                multiline={true}
+                value={description}
+                onChangeText={setDescription}
+                textAlignVertical="top"
+                scrollEnabled={true} 
+              />
+            </ScrollView>
+            <View style={styles.buttonContainer}>
+              <Button title="Cancel" onPress={onClose} color="#888" />
+              <Button title="Save" onPress={handleSave} />
+            </View>
           </View>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 };
@@ -64,6 +73,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
+    color: colors.DARK,
   },
   input: {
     borderBottomWidth: 2,
@@ -72,9 +82,11 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
   },
+  descriptionScrollView: {
+    flex: 1,
+  },
   descriptionInput: {
-    minHeight: 100,
-    textAlignVertical: 'top',
+    minHeight: 50,
   },
   buttonContainer: {
     flexDirection: 'row',
