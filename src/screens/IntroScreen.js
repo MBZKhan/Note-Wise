@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome'; // Import the icon component you want to use
 import colors from '../misc/GlobalStyles';
 
-const IntroScreen = () => {
+const IntroScreen = ({ navigation }) => { // Assuming you're using navigation props for navigation
   const [name, setName] = useState('');
 
   const handleContinue = () => {
     console.log('Name entered:', name);
+    // Navigate to the next screen here
+    // Example: navigation.navigate('NextScreen');
   };
 
   return (
@@ -19,7 +22,9 @@ const IntroScreen = () => {
         placeholder="Your Name"
         autoCapitalize="words"
       />
-      <Button title="Continue" onPress={handleContinue} />
+      <TouchableOpacity style={styles.roundButton} onPress={handleContinue}>
+        <Icon name="arrow-right" size={20} color="white" />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -34,19 +39,26 @@ const styles = StyleSheet.create({
   introText: {
     fontSize: 20,
     marginBottom: 20,
-    color:  colors.DARK,
+    color: colors.DARK,
   },
   input: {
-    height: 40,
-    width: Dimensions.get('window').width - 80, 
+    height: 50,
+    width: Dimensions.get('window').width - 80,
     color: colors.PRIMARY,
     fontSize: 20,
     borderColor: colors.PRIMARY,
     borderWidth: 2,
     borderRadius: 10,
-    height: 50,
     paddingHorizontal: 10,
     marginBottom: 20,
+  },
+  roundButton: {
+    backgroundColor: colors.PRIMARY, 
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 50,
+    height: 50,
+    borderRadius: 25, 
   },
 });
 
