@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Dimensions } from 'react-native';
 
 const IntroScreen = () => {
   const [name, setName] = useState('');
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    width: '100%',
+    width: Dimensions.get('window').width - 80, 
     borderColor: 'gray',
     borderWidth: 1,
     borderRadius: 5,
