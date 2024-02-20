@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import colors from '../misc/GlobalStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SearchComponent from '../components/SearchComponent';
+import NoteModal from '../components/NoteModal';
 
 const HomeScreen = () => {
   const currentHour = new Date().getHours();
@@ -18,6 +19,7 @@ const HomeScreen = () => {
   }
 
   const [name, setName] = useState('');
+  const [modalVisible, setModalVisible] = useState(false); 
 
   useEffect(() => {
     loadName();
@@ -41,7 +43,16 @@ const HomeScreen = () => {
   };
 
   const handleAddNote = () => {
-    console.log('Adding note...');
+    setModalVisible(true); 
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false); 
+  };
+
+  const handleSaveNote = (noteData) => {
+    console.log('Saving note:', noteData);
+    setModalVisible(false); 
   };
 
   return (
@@ -58,6 +69,11 @@ const HomeScreen = () => {
       <TouchableOpacity style={styles.addButton} onPress={handleAddNote}>
         <Icon name="plus" size={24} color="white" />
       </TouchableOpacity>
+      <NoteModal 
+        visible={modalVisible} 
+        onClose={handleCloseModal} 
+        onSave={handleSaveNote} 
+      />
     </View>
   );
 };
@@ -67,6 +83,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'flex-start',
     padding: 20,
+    backgroundColor: colors.LIGHT,
   },
   greetingContainer: {
     marginBottom: 20,
