@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, View, Text, TextInput, Button, StyleSheet, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import colors from '../misc/GlobalStyles';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const NoteModal = ({ visible, onClose, onSave }) => {
   const [title, setTitle] = useState('');
@@ -29,14 +30,14 @@ const NoteModal = ({ visible, onClose, onSave }) => {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Add Note</Text>
             <TextInput
-              style={styles.input}
+              style={styles.titleInput}
               placeholder="Title"
               value={title}
               onChangeText={setTitle}
             />
             <ScrollView style={styles.descriptionScrollView}>
               <TextInput
-                style={[styles.input, styles.descriptionInput]}
+                style={styles.descriptionInput}
                 placeholder="Description"
                 multiline={true}
                 value={description}
@@ -46,8 +47,8 @@ const NoteModal = ({ visible, onClose, onSave }) => {
               />
             </ScrollView>
             <View style={styles.buttonContainer}>
-              <Button title="Cancel" onPress={onClose} color="#888" />
-              <Button title="Save" onPress={handleSave} />
+              <Icon name="times" size={30} color="red" onPress={onClose} style={styles.roundButtonIcon} />
+              <Icon name="check" size={30} color="green" onPress={handleSave} style={styles.roundButtonIcon} />
             </View>
           </View>
         </View>
@@ -75,25 +76,43 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: colors.DARK,
   },
-  input: {
+  titleInput: {
+    fontSize: 30,
+    fontWeight: 'bold',
     borderBottomWidth: 2,
     borderColor: colors.PRIMARY,
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
   },
+  descriptionInput: {
+    borderBottomWidth: 2,
+    borderColor: colors.PRIMARY,
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+    fontSize: 20,
+    minHeight: 50,
+  },
   descriptionScrollView: {
     flex: 1,
-  },
-  descriptionInput: {
-    minHeight: 50,
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 20,
-    marginRight:100,
-    marginLeft: 100,
+    paddingHorizontal: 20,
+  },
+  roundButtonIcon: {
+    backgroundColor: colors.PRIMARY,
+    borderRadius: 30,
+    width: 60,
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    padding: 10,
   },
 });
 
