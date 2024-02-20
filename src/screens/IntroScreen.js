@@ -1,13 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'; 
 import colors from '../misc/GlobalStyles';
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
 
 const IntroScreen = () => { 
   const [name, setName] = useState('');
 
-  const handleContinue = () => {
+  useEffect(() => {
+    loadName();
+  }, []);
+
+  const loadName = async () => {
+    try {
+      const storedName = await AsyncStorage.getItem('name');
+      if (storedName !== null) {
+        setName(storedName);
+      }
+    } catch (error) {
+      console.error('Error loading name:', error);
+    }
+  };
+
+  const handleContinue = async () => {
     console.log('Name entered:', name);
+    try {
+      await AsyncStorage.setItem('name', name);
+      console.log('Name stored successfully');
+    } catch (error) {
+      console.error('Error storing name:', error);
+    }
   };
 
   return (
