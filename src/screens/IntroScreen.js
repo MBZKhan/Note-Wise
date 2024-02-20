@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Dimensions, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome'; 
 import colors from '../misc/GlobalStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
@@ -32,20 +32,28 @@ const IntroScreen = () => {
     }
   };
 
+  const dismissKeyboard = () => {
+    Keyboard.dismiss();
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.introText}>Enter your name to continue:</Text>
-      <TextInput
-        style={styles.input}
-        value={name}
-        onChangeText={setName}
-        placeholder="Your Name"
-        autoCapitalize="words"
-      />
-      <TouchableOpacity style={styles.roundButton} onPress={handleContinue}>
-        <Icon name="arrow-right" size={20} color="white" />
-      </TouchableOpacity>
-    </View>
+    <TouchableWithoutFeedback onPress={dismissKeyboard}>
+      <View style={styles.container}>
+        <Text style={styles.introText}>Enter your name to continue:</Text>
+        <TextInput
+          style={styles.input}
+          value={name}
+          onChangeText={setName}
+          placeholder="Your Name"
+          autoCapitalize="words"
+        />
+        {name.length >= 3 && ( 
+          <TouchableOpacity style={styles.roundButton} onPress={handleContinue}>
+            <Icon name="arrow-right" size={20} color="white" />
+          </TouchableOpacity>
+        )}
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 

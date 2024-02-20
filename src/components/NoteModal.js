@@ -18,6 +18,8 @@ const NoteModal = ({ visible, onClose, onSave }) => {
     Keyboard.dismiss();
   };
 
+  const isNoteEmpty = title.trim() === '' && description.trim() === '';
+
   return (
     <Modal
       animationType="slide"
@@ -47,8 +49,15 @@ const NoteModal = ({ visible, onClose, onSave }) => {
               />
             </ScrollView>
             <View style={styles.buttonContainer}>
-              <Icon name="times" size={30} color="red" onPress={onClose} style={styles.roundButtonIcon} />
-              <Icon name="check" size={30} color="green" onPress={handleSave} style={styles.roundButtonIcon} />
+              {!isNoteEmpty && ( 
+                <>
+                  <Icon name="times" size={30} color="red" onPress={onClose} style={styles.roundButtonIcon} />
+                  <Icon name="check" size={30} color="green" onPress={handleSave} style={styles.roundButtonIcon} />
+                </>
+              )}
+              {isNoteEmpty && (
+                <Icon name="times" size={30} color="red" onPress={onClose} style={styles.roundButtonIcon} />
+              )}
             </View>
           </View>
         </View>
@@ -70,7 +79,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   modalTitle: {
-    fontSize: 30,
+    fontSize: 35,
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
