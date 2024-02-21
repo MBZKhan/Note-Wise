@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     color: colors.DARK,
     borderBottomWidth: 3,
     borderBottomColor: colors.PRIMARY,
-    marginTop: 20,
+    marginTop: 30,
   },
   description: {
     fontSize: 20,
