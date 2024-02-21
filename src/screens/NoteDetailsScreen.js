@@ -1,9 +1,10 @@
 import React from 'react';
-import { ScrollView, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import colors from '../misc/GlobalStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const NoteDetailsScreen = ({ route }) => {
+const NoteDetailsScreen = ({ route, navigation }) => {
   const { title, description, createdAt } = route.params; 
 
   const handleEdit = () => {
@@ -11,8 +12,40 @@ const NoteDetailsScreen = ({ route }) => {
   };
 
   const handleDelete = () => {
-    // Implement delete action
+    Alert.alert(
+      'Delete Note',
+      'Are you sure you want to delete this note?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          onPress: async () => {
+            try {
+              // Load existing notes from AsyncStorage
+              const storedNotes = await AsyncStorage.getItem('notes');
+              if (storedNotes !== null) {
+                const parsedNotes = JSON.parse(storedNotes);
+                // Filter out the note to be deleted based on its id
+                const updatedNotes = parsedNotes.filter(note => note.id !== route.params.id);
+                // Save updated notes to AsyncStorage
+                await AsyncStorage.setItem('notes', JSON.stringify(updatedNotes));
+                // Navigate back to HomeScreen or any other desired screen
+                navigation.goBack();
+              }
+            } catch (error) {
+              console.error('Error deleting note:', error);
+            }
+          },
+          style: 'destructive',
+        },
+      ],
+      { cancelable: true }
+    );
   };
+  
 
   return (
     <View style={styles.container}>

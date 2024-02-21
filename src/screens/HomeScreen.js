@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import colors from '../misc/GlobalStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native'; 
 import SearchComponent from '../components/SearchComponent';
 import NoteModal from '../components/NoteModal';
 import Note from '../components/Note';
 
 const HomeScreen = () => {
   const { navigate } = useNavigation();
+  const isFocused = useIsFocused(); 
 
   const currentHour = new Date().getHours();
   let greeting = '';
@@ -30,7 +31,7 @@ const HomeScreen = () => {
     // AsyncStorage.clear();
     loadName();
     loadNotes();
-  }, []);
+  }, [isFocused]); 
 
   const loadName = async () => {
     try {
@@ -49,7 +50,7 @@ const HomeScreen = () => {
       if (storedNotes !== null) {
         const parsedNotes = JSON.parse(storedNotes);
         setNotes(parsedNotes);
-        console.log('Saved Notes:', parsedNotes); 
+        console.log('Saved Notes:', parsedNotes);
       }
     } catch (error) {
       console.error('Error loading notes:', error);
@@ -78,34 +79,27 @@ const HomeScreen = () => {
     setModalVisible(false);
   };
 
-  const handleSaveNote = async (noteData) => {
-    const currentDate = new Date();
-    const formattedDate = currentDate.toLocaleString('en-US', {
-      month: '2-digit',
-      day: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: true,
-    });
-  
-    const id = currentDate.toISOString(); 
-    const newNote = { ...noteData, id, createdAt: formattedDate };
+  const handleSaveNote = (noteData) => {
+    const date = new Date().toISOString();
+    const newNote = { ...noteData, id: date };
     const updatedNotes = [...notes, newNote];
-  
-    try {
-      await AsyncStorage.setItem('notes', JSON.stringify(updatedNotes));
-      setNotes(updatedNotes);
-      setModalVisible(false);
-    } catch (error) {
-      console.error('Error saving notes:', error);
-    }
+    setNotes(updatedNotes);
+    saveNotes(updatedNotes);
+    setModalVisible(false);
   };
-  
 
   const navigateToNoteDetails = (note) => {
     navigate('NoteDetailsScreen', note);
+  };
+
+  const handleDeleteNote = async (noteId) => {
+    try {
+      const filteredNotes = notes.filter((note) => note.id !== noteId);
+      setNotes(filteredNotes);
+      await AsyncStorage.setItem('notes', JSON.stringify(filteredNotes));
+    } catch (error) {
+      console.error('Error deleting note:', error);
+    }
   };
 
   return (
@@ -138,12 +132,13 @@ const HomeScreen = () => {
             <Note
               title={item.title}
               description={item.description}
+              onDelete={() => handleDeleteNote(item.id)} // Pass handleDeleteNote as onDelete prop
             />
           </TouchableOpacity>
         )}
         keyExtractor={(item) => item.id}
-        numColumns={2} 
-        columnWrapperStyle={styles.columnWrapper} 
+        numColumns={2}
+        columnWrapperStyle={styles.columnWrapper}
       />
     </View>
   );
@@ -173,7 +168,7 @@ const styles = StyleSheet.create({
     transform: [{ translateX: -50 }, { translateY: -50 }],
   },
   columnWrapper: {
-    justifyContent: 'space-between', 
+    justifyContent: 'space-between',
   },
   centeredText: {
     fontSize: 24,
