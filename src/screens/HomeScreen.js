@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import colors from '../misc/GlobalStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SearchComponent from '../components/SearchComponent';
 import NoteModal from '../components/NoteModal';
+import Note from '../components/Note';
 
 const HomeScreen = () => {
   const currentHour = new Date().getHours();
@@ -100,6 +101,11 @@ const HomeScreen = () => {
         visible={modalVisible}
         onClose={handleCloseModal}
         onSave={handleSaveNote}
+      />
+      <FlatList
+        data={notes}
+        renderItem={({ item }) => <Note title={item.title} description={item.description} />}
+        keyExtractor={(item) => item.id}
       />
     </View>
   );
