@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import colors from '../misc/GlobalStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -24,6 +24,7 @@ const HomeScreen = () => {
   const [notes, setNotes] = useState([]);
 
   useEffect(() => {
+    // AsyncStorage.clear();
     loadName();
     loadNotes();
   }, []);
@@ -90,10 +91,14 @@ const HomeScreen = () => {
           {greeting}, {name ? name : 'Friend'}
         </Text>
       </View>
-      <SearchComponent searchText={searchText} handleSearch={handleSearch} />
-      <View style={styles.centeredTextContainer}>
-        <Text style={styles.centeredText}>ADD NOTES</Text>
-      </View>
+      {notes.length > 0 && (
+        <SearchComponent searchText={searchText} handleSearch={handleSearch} />
+      )}
+      {notes.length === 0 && (
+        <View style={styles.centeredTextContainer}>
+          <Text style={styles.centeredText}>ADD NOTES</Text>
+        </View>
+      )}
       <TouchableOpacity style={styles.addButton} onPress={handleAddNote}>
         <Icon name="plus" size={24} color="white" />
       </TouchableOpacity>
@@ -104,8 +109,15 @@ const HomeScreen = () => {
       />
       <FlatList
         data={notes}
-        renderItem={({ item }) => <Note title={item.title} description={item.description} />}
+        renderItem={({ item }) => (
+          <Note
+            title={item.title}
+            description={item.description}
+          />
+        )}
         keyExtractor={(item) => item.id}
+        numColumns={2} 
+        columnWrapperStyle={styles.columnWrapper} 
       />
     </View>
   );
@@ -134,6 +146,9 @@ const styles = StyleSheet.create({
     left: '50%',
     transform: [{ translateX: -50 }, { translateY: -50 }],
   },
+  columnWrapper: {
+    justifyContent: 'space-between', 
+  },
   centeredText: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -150,7 +165,10 @@ const styles = StyleSheet.create({
     height: 60,
     alignItems: 'center',
     justifyContent: 'center',
+    zIndex: 2,
   },
+  
+  
 });
 
 export default HomeScreen;
