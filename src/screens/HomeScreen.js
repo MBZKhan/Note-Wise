@@ -78,14 +78,31 @@ const HomeScreen = () => {
     setModalVisible(false);
   };
 
-  const handleSaveNote = (noteData) => {
-    const date = new Date().toISOString();
-    const newNote = { ...noteData, id: date };
+  const handleSaveNote = async (noteData) => {
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleString('en-US', {
+      month: '2-digit',
+      day: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true,
+    });
+  
+    const id = currentDate.toISOString(); 
+    const newNote = { ...noteData, id, createdAt: formattedDate };
     const updatedNotes = [...notes, newNote];
-    setNotes(updatedNotes);
-    saveNotes(updatedNotes);
-    setModalVisible(false);
+  
+    try {
+      await AsyncStorage.setItem('notes', JSON.stringify(updatedNotes));
+      setNotes(updatedNotes);
+      setModalVisible(false);
+    } catch (error) {
+      console.error('Error saving notes:', error);
+    }
   };
+  
 
   const navigateToNoteDetails = (note) => {
     navigate('NoteDetailsScreen', note);
