@@ -5,7 +5,7 @@ import colors from '../misc/GlobalStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useIsFocused } from '@react-navigation/native'; 
 import SearchComponent from '../components/SearchComponent';
-import NoteModal from '../components/NoteModal';
+import AddNoteModal from '../components/AddNoteModal';
 import Note from '../components/Note';
 
 const HomeScreen = () => {
@@ -137,7 +137,7 @@ const HomeScreen = () => {
       <TouchableOpacity style={styles.addButton} onPress={handleAddNote}>
         <Icon name="plus" size={24} color="white" />
       </TouchableOpacity>
-      <NoteModal
+      <AddNoteModal
         visible={modalVisible}
         onClose={handleCloseModal}
         onSave={handleSaveNote}

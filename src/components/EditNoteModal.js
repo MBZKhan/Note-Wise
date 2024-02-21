@@ -3,14 +3,12 @@ import { Modal, View, Text, TextInput, Button, StyleSheet, ScrollView, Touchable
 import colors from '../misc/GlobalStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const NoteModal = ({ visible, onClose, onSave }) => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+const EditNoteModal = ({ visible, onClose, onSave, noteData }) => {
+  const [title, setTitle] = useState(noteData.title);
+  const [description, setDescription] = useState(noteData.description);
 
   const handleSave = () => {
     onSave({ title, description });
-    setTitle('');
-    setDescription('');
     onClose();
   };
 
@@ -30,7 +28,7 @@ const NoteModal = ({ visible, onClose, onSave }) => {
       <TouchableWithoutFeedback onPress={dismissKeyboard}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Add Note</Text>
+            <Text style={styles.modalTitle}>Edit Note</Text>
             <TextInput
               style={styles.titleInput}
               placeholder="Title"
@@ -125,4 +123,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NoteModal;
+export default EditNoteModal;

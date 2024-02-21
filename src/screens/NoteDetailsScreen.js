@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import colors from '../misc/GlobalStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import EditNoteModal from '../components/EditNoteModal'; // Import the EditNoteModal
 
 const NoteDetailsScreen = ({ route, navigation }) => {
-  const { title, description, createdAt } = route.params; 
+  const { id, title: initialTitle, description: initialDescription, createdAt } = route.params; 
+  const [title, setTitle] = useState(initialTitle);
+  const [description, setDescription] = useState(initialDescription);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const handleEdit = () => {
-    // Implement edit action
+    setModalVisible(true);
   };
 
   const handleDelete = () => {
@@ -46,6 +50,30 @@ const NoteDetailsScreen = ({ route, navigation }) => {
     );
   };
   
+  const handleSaveEdit = async (editedData) => {
+    try {
+      // Load existing notes from AsyncStorage
+      const storedNotes = await AsyncStorage.getItem('notes');
+      if (storedNotes !== null) {
+        const parsedNotes = JSON.parse(storedNotes);
+        // Find the index of the note to be edited
+        const noteIndex = parsedNotes.findIndex(note => note.id === id);
+        if (noteIndex !== -1) {
+          // Update the note with edited data
+          parsedNotes[noteIndex] = { id, ...editedData };
+          // Save updated notes to AsyncStorage
+          await AsyncStorage.setItem('notes', JSON.stringify(parsedNotes));
+          // Update state with new title and description
+          setTitle(editedData.title);
+          setDescription(editedData.description);
+          // Close the modal
+          setModalVisible(false);
+        }
+      }
+    } catch (error) {
+      console.error('Error editing note:', error);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -66,6 +94,12 @@ const NoteDetailsScreen = ({ route, navigation }) => {
       <View style={styles.createdAtContainer}>
         <Text style={styles.createdAtText}>Created At: {createdAt}</Text>
       </View>
+      <EditNoteModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onSave={handleSaveEdit}
+        noteData={{ title, description }}
+      />
     </View>
   );
 };
