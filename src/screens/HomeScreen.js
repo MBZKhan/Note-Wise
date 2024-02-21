@@ -3,11 +3,14 @@ import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert} from 'react-
 import Icon from 'react-native-vector-icons/FontAwesome';
 import colors from '../misc/GlobalStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 import SearchComponent from '../components/SearchComponent';
 import NoteModal from '../components/NoteModal';
 import Note from '../components/Note';
 
 const HomeScreen = () => {
+  const { navigate } = useNavigation();
+
   const currentHour = new Date().getHours();
   let greeting = '';
 
@@ -84,6 +87,10 @@ const HomeScreen = () => {
     setModalVisible(false);
   };
 
+  const navigateToNoteDetails = (note) => {
+    navigate('NoteDetailsScreen', note);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.greetingContainer}>
@@ -110,10 +117,12 @@ const HomeScreen = () => {
       <FlatList
         data={notes}
         renderItem={({ item }) => (
-          <Note
-            title={item.title}
-            description={item.description}
-          />
+          <TouchableOpacity onPress={() => navigateToNoteDetails(item)}>
+            <Note
+              title={item.title}
+              description={item.description}
+            />
+          </TouchableOpacity>
         )}
         keyExtractor={(item) => item.id}
         numColumns={2} 
@@ -167,8 +176,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     zIndex: 2,
   },
-  
-  
 });
 
 export default HomeScreen;

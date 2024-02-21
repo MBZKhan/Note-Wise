@@ -16,11 +16,11 @@ const AppNavigator = () => {
                 component={IntroScreen}
                 options={{ headerShown: false }}
             /> */}
-            {/* <Stack.Screen
+            <Stack.Screen
                 name="HomeScreen"
                 component={HomeScreen}
                 options={{ headerShown: false }}
-            /> */}
+            />
             <Stack.Screen
                 name="NoteDetailsScreen"
                 component={NoteDetailsScreen}

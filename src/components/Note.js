@@ -5,7 +5,7 @@ import colors from '../misc/GlobalStyles';
 const windowWidth = Dimensions.get('window').width;
 
 const Note = ({ title, description }) => {
-  const noteWidth = (windowWidth / 2) - 40; // Assuming 2 columns
+  const noteWidth = (windowWidth / 2) - 40; 
   return (
     <View style={[styles.container, { width: noteWidth }]}>
       <Text numberOfLines={2} style={styles.title}>{title}</Text>
