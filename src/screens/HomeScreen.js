@@ -19,10 +19,12 @@ const HomeScreen = () => {
   }
 
   const [name, setName] = useState('');
-  const [modalVisible, setModalVisible] = useState(false); 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [notes, setNotes] = useState([]);
 
   useEffect(() => {
     loadName();
+    loadNotes();
   }, []);
 
   const loadName = async () => {
@@ -36,6 +38,27 @@ const HomeScreen = () => {
     }
   };
 
+  const loadNotes = async () => {
+    try {
+      const storedNotes = await AsyncStorage.getItem('notes');
+      if (storedNotes !== null) {
+        const parsedNotes = JSON.parse(storedNotes);
+        setNotes(parsedNotes);
+        console.log('Saved Notes:', parsedNotes); 
+      }
+    } catch (error) {
+      console.error('Error loading notes:', error);
+    }
+  };
+
+  const saveNotes = async (newNotes) => {
+    try {
+      await AsyncStorage.setItem('notes', JSON.stringify(newNotes));
+    } catch (error) {
+      console.error('Error saving notes:', error);
+    }
+  };
+
   const [searchText, setSearchText] = useState('');
 
   const handleSearch = (text) => {
@@ -43,16 +66,20 @@ const HomeScreen = () => {
   };
 
   const handleAddNote = () => {
-    setModalVisible(true); 
+    setModalVisible(true);
   };
 
   const handleCloseModal = () => {
-    setModalVisible(false); 
+    setModalVisible(false);
   };
 
   const handleSaveNote = (noteData) => {
-    console.log('Saving note:', noteData);
-    setModalVisible(false); 
+    const date = new Date().toISOString();
+    const newNote = { ...noteData, id: date };
+    const updatedNotes = [...notes, newNote];
+    setNotes(updatedNotes);
+    saveNotes(updatedNotes);
+    setModalVisible(false);
   };
 
   return (
@@ -69,10 +96,10 @@ const HomeScreen = () => {
       <TouchableOpacity style={styles.addButton} onPress={handleAddNote}>
         <Icon name="plus" size={24} color="white" />
       </TouchableOpacity>
-      <NoteModal 
-        visible={modalVisible} 
-        onClose={handleCloseModal} 
-        onSave={handleSaveNote} 
+      <NoteModal
+        visible={modalVisible}
+        onClose={handleCloseModal}
+        onSave={handleSaveNote}
       />
     </View>
   );
