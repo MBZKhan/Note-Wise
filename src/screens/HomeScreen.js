@@ -26,6 +26,7 @@ const HomeScreen = () => {
   const [name, setName] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [notes, setNotes] = useState([]);
+  const [filteredNotes, setFilteredNotes] = useState([]);
 
   useEffect(() => {
     // AsyncStorage.clear();
@@ -50,6 +51,7 @@ const HomeScreen = () => {
       if (storedNotes !== null) {
         const parsedNotes = JSON.parse(storedNotes);
         setNotes(parsedNotes);
+        setFilteredNotes(parsedNotes); 
         console.log('Saved Notes:', parsedNotes);
       }
     } catch (error) {
@@ -69,8 +71,15 @@ const HomeScreen = () => {
 
   const handleSearch = (text) => {
     setSearchText(text);
+    const searchTextLowerCase = text.toLowerCase();
+    const filteredNotes = notes.filter(note => {
+      const titleLowerCase = note.title.toLowerCase();
+      const descriptionLowerCase = note.description.toLowerCase();
+      return titleLowerCase.includes(searchTextLowerCase) || descriptionLowerCase.includes(searchTextLowerCase);
+    });
+    setFilteredNotes(filteredNotes);
   };
-
+  
   const handleAddNote = () => {
     setModalVisible(true);
   };
@@ -98,12 +107,21 @@ const HomeScreen = () => {
     try {
       await AsyncStorage.setItem('notes', JSON.stringify(updatedNotes));
       setNotes(updatedNotes);
+  
+      // Update filteredNotes state as well
+      const searchTextLowerCase = searchText.toLowerCase();
+      const filteredNotes = updatedNotes.filter(note => {
+        const titleLowerCase = note.title.toLowerCase();
+        const descriptionLowerCase = note.description.toLowerCase();
+        return titleLowerCase.includes(searchTextLowerCase) || descriptionLowerCase.includes(searchTextLowerCase);
+      });
+      setFilteredNotes(filteredNotes);
+  
       setModalVisible(false);
     } catch (error) {
       console.error('Error saving notes:', error);
     }
   };
-  
 
   const navigateToNoteDetails = (note) => {
     navigate('NoteDetailsScreen', note);
@@ -143,7 +161,7 @@ const HomeScreen = () => {
         onSave={handleSaveNote}
       />
       <FlatList
-        data={notes}
+        data={filteredNotes.length > 0 ? filteredNotes : notes}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => navigateToNoteDetails(item)}>
             <Note
