@@ -1,15 +1,38 @@
-import React, { useState } from 'react';
-import { Modal, View, Text, TextInput, Button, StyleSheet, ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Modal, View, Text, TextInput, Button, StyleSheet, ScrollView, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native';
 import colors from '../misc/GlobalStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const EditNoteModal = ({ visible, onClose, onSave, noteData }) => {
   const [title, setTitle] = useState(noteData.title);
   const [description, setDescription] = useState(noteData.description);
+  const [unsavedChanges, setUnsavedChanges] = useState(false);
 
-  const handleSave = () => {
-    onSave({ title, description });
+  useEffect(() => {
+    setTitle(noteData.title);
+    setDescription(noteData.description);
+    setUnsavedChanges(false);
+  }, [noteData]);
+
+  const handleSave = async () => {
+    await onSave({ title, description });
     onClose();
+  };
+
+  const handleClose = () => {
+    if (unsavedChanges) {
+      Alert.alert(
+        'Discard Changes?',
+        'Are you sure you want to discard the changes?',
+        [
+          { text: 'Cancel', onPress: () => {} },
+          { text: 'Discard', onPress: onClose }
+        ],
+        { cancelable: true }
+      );
+    } else {
+      onClose();
+    }
   };
 
   const dismissKeyboard = () => {
@@ -23,7 +46,7 @@ const EditNoteModal = ({ visible, onClose, onSave, noteData }) => {
       animationType="slide"
       transparent={true}
       visible={visible}
-      onRequestClose={onClose}
+      onRequestClose={handleClose}
     >
       <TouchableWithoutFeedback onPress={dismissKeyboard}>
         <View style={styles.modalContainer}>
@@ -33,7 +56,10 @@ const EditNoteModal = ({ visible, onClose, onSave, noteData }) => {
               style={styles.titleInput}
               placeholder="Title"
               value={title}
-              onChangeText={setTitle}
+              onChangeText={(text) => {
+                setTitle(text);
+                setUnsavedChanges(true);
+              }}
             />
             <ScrollView style={styles.descriptionScrollView}>
               <TextInput
@@ -41,7 +67,10 @@ const EditNoteModal = ({ visible, onClose, onSave, noteData }) => {
                 placeholder="Description"
                 multiline={true}
                 value={description}
-                onChangeText={setDescription}
+                onChangeText={(text) => {
+                  setDescription(text);
+                  setUnsavedChanges(true);
+                }}
                 textAlignVertical="top"
                 scrollEnabled={true} 
               />
@@ -49,12 +78,12 @@ const EditNoteModal = ({ visible, onClose, onSave, noteData }) => {
             <View style={styles.buttonContainer}>
               {!isNoteEmpty && ( 
                 <>
-                  <Icon name="times" size={30} color="white" onPress={onClose} style={styles.roundButtonIcon} />
+                  <Icon name="times" size={30} color="white" onPress={handleClose} style={styles.roundButtonIcon} />
                   <Icon name="check" size={30} color="white" onPress={handleSave} style={styles.roundButtonIcon} />
                 </>
               )}
               {isNoteEmpty && (
-                <Icon name="times" size={30} color="white" onPress={onClose} style={styles.roundButtonIcon} />
+                <Icon name="times" size={30} color="white" onPress={handleClose} style={styles.roundButtonIcon} />
               )}
             </View>
           </View>
