@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import colors from '../misc/GlobalStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,6 +11,7 @@ import Note from '../components/Note';
 const HomeScreen = () => {
   const { navigate } = useNavigation();
   const isFocused = useIsFocused(); 
+  const flatListRef = useRef(null); 
 
   const currentHour = new Date().getHours();
   let greeting = '';
@@ -28,11 +29,22 @@ const HomeScreen = () => {
   const [notes, setNotes] = useState([]);
   const [filteredNotes, setFilteredNotes] = useState([]);
   const [searchText, setSearchText] = useState('');
+  const [addButtonVisible, setAddButtonVisible] = useState(true); 
 
   useEffect(() => {
     loadName();
     loadNotes();
   }, [isFocused]); 
+
+  useEffect(() => {
+    const scrollListener = flatListRef.current?.addListener(({ contentOffset }) => {
+      const offsetY = contentOffset.y;
+      setAddButtonVisible(offsetY < 100); 
+    });
+    return () => {
+      flatListRef.current?.removeListener(scrollListener);
+    };
+  }, []);
 
   const loadName = async () => {
     try {
@@ -158,15 +170,18 @@ const HomeScreen = () => {
         )}
         {filteredNotes.length > 0 && (
           <>
-            <TouchableOpacity style={styles.addButton} onPress={handleAddNote}>
-              <Icon name="plus" size={24} color="white" />
-            </TouchableOpacity>
+            {addButtonVisible && (
+              <TouchableOpacity style={styles.addButton} onPress={handleAddNote}>
+                <Icon name="plus" size={24} color="white" />
+              </TouchableOpacity>
+            )}
             <AddNoteModal
               visible={modalVisible}
               onClose={handleCloseModal}
               onSave={handleSaveNote}
             />
             <FlatList
+              ref={flatListRef} 
               data={filteredNotes}
               renderItem={({ item }) => (
                 <TouchableOpacity onPress={() => navigateToNoteDetails(item)}>
