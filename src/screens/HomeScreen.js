@@ -37,7 +37,7 @@ const HomeScreen = () => {
       try {
         await loadName();
         await loadNotes();
-        setLoading(false); // Set loading to false after data is loaded
+        setLoading(false); 
       } catch (error) {
         console.error('Error loading data:', error);
       }
