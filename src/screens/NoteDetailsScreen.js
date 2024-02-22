@@ -111,10 +111,10 @@ const NoteDetailsScreen = ({ route, navigation }) => {
       </ScrollView>
       <View style={styles.buttonsContainer}>
         <TouchableOpacity style={styles.button} onPress={handleEdit}>
-          <Icon name="edit" size={24} color="black" />
+          <Icon name="edit" size={24} color="white" />
         </TouchableOpacity>
         <TouchableOpacity style={[styles.button, styles.deleteButton]} onPress={handleDelete}>
-          <Icon name="trash" size={24} color="red" />
+          <Icon name="trash" size={24} color="white" />
         </TouchableOpacity>
       </View>
       <View style={styles.timeContainer}>
@@ -139,6 +139,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    color: colors.LIGHT,
   },
   scrollContainer: {
     flexGrow: 1,
@@ -170,13 +171,13 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: colors.PRIMARY,
+    backgroundColor: colors.SECONDARY,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 10,
   },
   deleteButton: {
-    backgroundColor: colors.PRIMARY, 
+    backgroundColor: colors.SECONDARY, 
   },
   timeContainer: {
     position: 'absolute',

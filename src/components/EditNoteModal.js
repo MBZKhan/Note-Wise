@@ -49,12 +49,12 @@ const EditNoteModal = ({ visible, onClose, onSave, noteData }) => {
             <View style={styles.buttonContainer}>
               {!isNoteEmpty && ( 
                 <>
-                  <Icon name="times" size={30} color="red" onPress={onClose} style={styles.roundButtonIcon} />
-                  <Icon name="check" size={30} color="green" onPress={handleSave} style={styles.roundButtonIcon} />
+                  <Icon name="times" size={30} color="white" onPress={onClose} style={styles.roundButtonIcon} />
+                  <Icon name="check" size={30} color="white" onPress={handleSave} style={styles.roundButtonIcon} />
                 </>
               )}
               {isNoteEmpty && (
-                <Icon name="times" size={30} color="red" onPress={onClose} style={styles.roundButtonIcon} />
+                <Icon name="times" size={30} color="white" onPress={onClose} style={styles.roundButtonIcon} />
               )}
             </View>
           </View>
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   modalContent: {
     flex: 1,
     width: '100%',
-    backgroundColor: 'white',
+    backgroundColor: colors.LIGHT,
     padding: 20,
   },
   modalTitle: {
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
-    color: colors.DARK,
+    color: colors.SECONDARY,
   },
   titleInput: {
     fontSize: 30,
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   roundButtonIcon: {
-    backgroundColor: colors.PRIMARY,
+    backgroundColor: colors.SECONDARY,
     borderRadius: 30,
     width: 60,
     height: 60,

@@ -27,12 +27,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: colors.LIGHT,
+    color: colors.WHITE,
   },
   description: {
     fontSize: 16,
     marginTop: 5,
-    color: colors.LIGHT,
+    color: colors.WHITE,
   },
 });
 

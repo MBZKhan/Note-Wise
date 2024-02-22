@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   roundButton: {
-    backgroundColor: colors.PRIMARY, 
+    backgroundColor: colors.SECONDARY, 
     alignItems: 'center',
     justifyContent: 'center',
     width: 60,

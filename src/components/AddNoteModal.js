@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   modalContent: {
     flex: 1,
     width: '100%',
-    backgroundColor: 'white',
+    backgroundColor: colors.LIGHT,
     padding: 20,
   },
   modalTitle: {
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
-    color: colors.DARK,
+    color: colors.SECONDARY,
   },
   titleInput: {
     fontSize: 30,

@@ -26,11 +26,11 @@ const SearchComponent = ({ searchText, handleSearch }) => {
           />
           {isSearching ? (
             <TouchableOpacity onPress={handleClearText} style={styles.iconContainer}>
-              <Icon name="times-circle" size={25} color={colors.PRIMARY} />
+              <Icon name="times-circle" size={25} color={colors.SECONDARY} />
             </TouchableOpacity>
           ) : (
             <View style={styles.iconContainer}>
-              <Icon name="search" size={20} color={colors.PRIMARY} />
+              <Icon name="search" size={20} color={colors.SECONDARY} />
             </View>
           )}
         </View>
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     width: '90%',
     alignSelf: 'center',
-    borderColor: colors.PRIMARY,
+    borderColor: colors.SECONDARY,
     borderWidth: 2,
     borderRadius: 10,
     marginBottom: 8,
