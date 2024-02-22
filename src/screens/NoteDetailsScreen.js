@@ -80,6 +80,11 @@ const NoteDetailsScreen = ({ route, navigation }) => {
           parsedNotes[noteIndex].lastEditedTime = editedTime;
           // Save updated notes to AsyncStorage
           await AsyncStorage.setItem('notes', JSON.stringify(parsedNotes));
+          // Update route.params with the new lastEditedTime
+          navigation.setParams({
+            ...route.params,
+            lastEditedTime: editedTime
+          });
           // Update state with new title and description
           setTitle(editedData.title);
           setDescription(editedData.description);
@@ -93,6 +98,8 @@ const NoteDetailsScreen = ({ route, navigation }) => {
       console.error('Error editing note:', error);
     }
   };
+  
+  
 
   return (
     <View style={styles.container}>
