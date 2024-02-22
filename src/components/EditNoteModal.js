@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   modalContent: {
     flex: 1,
     width: '100%',
-    backgroundColor: colors.LIGHT,
+    backgroundColor: colors.WHITE,
     padding: 20,
   },
   modalTitle: {

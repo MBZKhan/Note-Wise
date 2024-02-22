@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'flex-start',
     padding: 20,
-    backgroundColor: colors.LIGHT,
+    backgroundColor: colors.WHITE,
   },
   greetingContainer: {
     marginBottom: 20,
