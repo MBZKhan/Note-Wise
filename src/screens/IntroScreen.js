@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import colors from '../misc/GlobalStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 
-const IntroScreen = () => { 
+const IntroScreen = ({ navigation }) => { 
   const [name, setName] = useState('');
 
   useEffect(() => {
@@ -27,6 +27,7 @@ const IntroScreen = () => {
     try {
       await AsyncStorage.setItem('name', name);
       console.log('Name stored successfully');
+      navigation.navigate('HomeScreen');
     } catch (error) {
       console.error('Error storing name:', error);
     }
@@ -74,7 +75,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width - 80,
     color: colors.PRIMARY,
     fontSize: 20,
-    borderColor: colors.PRIMARY,
+    borderColor: colors.SECONDARY,
     borderWidth: 2,
     borderRadius: 10,
     paddingHorizontal: 10,
