@@ -21,9 +21,11 @@ const SplashScreen = () => {
             if (name) {
                 setTimeout(() => {
                     navigation.navigate('HomeScreen');
-                }, 6000); // Delay navigation for 6 seconds
+                }, 6000); 
             } else {
-                navigation.navigate('IntroScreen');
+                setTimeout(() => {
+                    navigation.navigate('IntroScreen');
+                }, 6000); 
             }
         } catch (error) {
             console.error('Error checking user existence:', error);
