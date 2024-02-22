@@ -1,17 +1,19 @@
 import React from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import { View, TextInput, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import colors from '../misc/GlobalStyles';
 
 const SearchComponent = ({ searchText, handleSearch }) => {
   return (
-    <View style={styles.searchContainer}>
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Search..."
-        onChangeText={handleSearch}
-        value={searchText}
-      />
-    </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search..."
+          onChangeText={handleSearch}
+          value={searchText}
+        />
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 

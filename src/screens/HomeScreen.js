@@ -147,34 +147,43 @@ const HomeScreen = () => {
       {notes.length > 0 && (
         <SearchComponent searchText={searchText} handleSearch={handleSearch} />
       )}
+      {filteredNotes.length === 0 && searchText.length > 0 && (
+        <View style={styles.centeredTextContainer}>
+          <Text style={styles.centeredText}>Not Found</Text>
+        </View>
+      )}
       {notes.length === 0 && (
         <View style={styles.centeredTextContainer}>
           <Text style={styles.centeredText}>ADD NOTES</Text>
         </View>
       )}
-      <TouchableOpacity style={styles.addButton} onPress={handleAddNote}>
-        <Icon name="plus" size={24} color="white" />
-      </TouchableOpacity>
-      <AddNoteModal
-        visible={modalVisible}
-        onClose={handleCloseModal}
-        onSave={handleSaveNote}
-      />
-      <FlatList
-        data={filteredNotes.length > 0 ? filteredNotes : notes}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigateToNoteDetails(item)}>
-            <Note
-              title={item.title}
-              description={item.description}
-              onDelete={() => handleDeleteNote(item.id)} 
-            />
+      {filteredNotes.length > 0 && (
+        <>
+          <TouchableOpacity style={styles.addButton} onPress={handleAddNote}>
+            <Icon name="plus" size={24} color="white" />
           </TouchableOpacity>
-        )}
-        keyExtractor={(item) => item.id}
-        numColumns={2}
-        columnWrapperStyle={styles.columnWrapper}
-      />
+          <AddNoteModal
+            visible={modalVisible}
+            onClose={handleCloseModal}
+            onSave={handleSaveNote}
+          />
+          <FlatList
+            data={filteredNotes}
+            renderItem={({ item }) => (
+              <TouchableOpacity onPress={() => navigateToNoteDetails(item)}>
+                <Note
+                  title={item.title}
+                  description={item.description}
+                  onDelete={() => handleDeleteNote(item.id)} 
+                />
+              </TouchableOpacity>
+            )}
+            keyExtractor={(item) => item.id}
+            numColumns={2}
+            columnWrapperStyle={styles.columnWrapper}
+          />
+        </>
+      )}
     </View>
   );
 };
