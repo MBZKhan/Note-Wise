@@ -30,12 +30,16 @@ const HomeScreen = () => {
   const [filteredNotes, setFilteredNotes] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [addButtonVisible, setAddButtonVisible] = useState(true); 
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
     const loadData = async () => {
-      if (notes.length > 0) {
+      try {
         await loadName();
         await loadNotes();
+        setLoading(false); // Set loading to false after data is loaded
+      } catch (error) {
+        console.error('Error loading data:', error);
       }
     };
     loadData();
