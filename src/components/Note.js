@@ -16,7 +16,7 @@ const Note = ({ title, description }) => {
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: 25,
+    borderRadius: 14,
     borderColor: colors.PRIMARY,
     paddingVertical: 10,
     paddingHorizontal: 20,

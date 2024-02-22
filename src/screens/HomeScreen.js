@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import colors from '../misc/GlobalStyles';
@@ -32,19 +32,27 @@ const HomeScreen = () => {
   const [addButtonVisible, setAddButtonVisible] = useState(true); 
 
   useEffect(() => {
-    loadName();
-    loadNotes();
-  }, [isFocused]); 
-
-  useEffect(() => {
-    const scrollListener = flatListRef.current?.addListener(({ contentOffset }) => {
-      const offsetY = contentOffset.y;
-      setAddButtonVisible(offsetY < 100); 
-    });
-    return () => {
-      flatListRef.current?.removeListener(scrollListener);
+    const loadData = async () => {
+      if (notes.length > 0) {
+        await loadName();
+        await loadNotes();
+      }
     };
-  }, []);
+    loadData();
+  }, [isFocused]);
+
+  useLayoutEffect(() => {
+    if (notes.length > 0 && flatListRef.current && flatListRef.current?.addListener) {
+      const scrollListener = flatListRef.current.addListener(({ contentOffset }) => {
+        const offsetY = contentOffset.y;
+        setAddButtonVisible(offsetY < 100); 
+      });
+      return () => {
+        flatListRef.current?.removeListener(scrollListener);
+      };
+    }
+  }, [notes]);
+  
 
   const loadName = async () => {
     try {
@@ -68,14 +76,6 @@ const HomeScreen = () => {
       }
     } catch (error) {
       console.error('Error loading notes:', error);
-    }
-  };
-
-  const saveNotes = async (newNotes) => {
-    try {
-      await AsyncStorage.setItem('notes', JSON.stringify(newNotes));
-    } catch (error) {
-      console.error('Error saving notes:', error);
     }
   };
 
@@ -168,39 +168,34 @@ const HomeScreen = () => {
             <Text style={styles.centeredText}>ADD NOTES</Text>
           </View>
         )}
-        {filteredNotes.length > 0 && (
-          <>
-            {addButtonVisible && (
-              <TouchableOpacity style={styles.addButton} onPress={handleAddNote}>
-                <Icon name="plus" size={24} color="white" />
-              </TouchableOpacity>
-            )}
-            <AddNoteModal
-              visible={modalVisible}
-              onClose={handleCloseModal}
-              onSave={handleSaveNote}
-            />
-            <FlatList
-              ref={flatListRef} 
-              data={filteredNotes}
-              renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => navigateToNoteDetails(item)}>
-                  <Note
-                    title={item.title}
-                    description={item.description}
-                    onDelete={() => handleDeleteNote(item.id)} 
-                  />
-                </TouchableOpacity>
-              )}
-              keyExtractor={(item) => item.id}
-              numColumns={2}
-              columnWrapperStyle={styles.columnWrapper}
-            />
-          </>
-        )}
+        <TouchableOpacity style={styles.addButton} onPress={handleAddNote}>
+          <Icon name="plus" size={24} color="white" />
+        </TouchableOpacity>
+        <AddNoteModal
+          visible={modalVisible}
+          onClose={handleCloseModal}
+          onSave={handleSaveNote}
+        />
+        <FlatList
+          ref={flatListRef} 
+          data={filteredNotes}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => navigateToNoteDetails(item)}>
+              <Note
+                title={item.title}
+                description={item.description}
+                onDelete={() => handleDeleteNote(item.id)} 
+              />
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item) => item.id}
+          numColumns={2}
+          columnWrapperStyle={styles.columnWrapper}
+        />
       </View>
     </TouchableWithoutFeedback>
   );
+  
 };
 
 const styles = StyleSheet.create({
