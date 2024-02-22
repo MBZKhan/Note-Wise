@@ -1,15 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import colors from '../misc/GlobalStyles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import EditNoteModal from '../components/EditNoteModal'; // Import the EditNoteModal
+import EditNoteModal from '../components/EditNoteModal'; 
 
 const NoteDetailsScreen = ({ route, navigation }) => {
-  const { id, title: initialTitle, description: initialDescription, createdAt } = route.params; 
+  const { id, title: initialTitle, description: initialDescription, createdAt, lastEditedTime } = route.params; 
   const [title, setTitle] = useState(initialTitle);
   const [description, setDescription] = useState(initialDescription);
+  const [isEdited, setIsEdited] = useState(false); 
   const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    setIsEdited(route.params.isEdited || false);
+  }, [route.params.isEdited]);
 
   const handleEdit = () => {
     setModalVisible(true);
@@ -52,15 +57,27 @@ const NoteDetailsScreen = ({ route, navigation }) => {
   
   const handleSaveEdit = async (editedData) => {
     try {
+      const editedTime = new Date().toLocaleString('en-US', {
+        month: '2-digit',
+        day: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+      });
       // Load existing notes from AsyncStorage
       const storedNotes = await AsyncStorage.getItem('notes');
       if (storedNotes !== null) {
-        const parsedNotes = JSON.parse(storedNotes);
+        let parsedNotes = JSON.parse(storedNotes);
         // Find the index of the note to be edited
-        const noteIndex = parsedNotes.findIndex(note => note.id === id);
+        const noteIndex = parsedNotes.findIndex((note) => note.id === id);
         if (noteIndex !== -1) {
           // Update the note with edited data
-          parsedNotes[noteIndex] = { id, ...editedData };
+          parsedNotes[noteIndex] = { ...parsedNotes[noteIndex], ...editedData };
+          // Update edit status and last edited time
+          parsedNotes[noteIndex].isEdited = true;
+          parsedNotes[noteIndex].lastEditedTime = editedTime;
           // Save updated notes to AsyncStorage
           await AsyncStorage.setItem('notes', JSON.stringify(parsedNotes));
           // Update state with new title and description
@@ -68,6 +85,8 @@ const NoteDetailsScreen = ({ route, navigation }) => {
           setDescription(editedData.description);
           // Close the modal
           setModalVisible(false);
+          // Set isEdited to true
+          setIsEdited(true);
         }
       }
     } catch (error) {
@@ -91,9 +110,14 @@ const NoteDetailsScreen = ({ route, navigation }) => {
           <Icon name="trash" size={24} color="red" />
         </TouchableOpacity>
       </View>
-      <View style={styles.createdAtContainer}>
-        <Text style={styles.createdAtText}>Created At: {createdAt}</Text>
+      <View style={styles.timeContainer}>
+        {isEdited ? (
+          <Text style={styles.timeText}>Last Edited At: {lastEditedTime}</Text>
+        ) : (
+          <Text style={styles.timeText}>Created At: {createdAt}</Text>
+        )}
       </View>
+
       <EditNoteModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
@@ -147,12 +171,12 @@ const styles = StyleSheet.create({
   deleteButton: {
     backgroundColor: colors.PRIMARY, 
   },
-  createdAtContainer: {
+  timeContainer: {
     position: 'absolute',
     top: 20,
     right: 20,
   },
-  createdAtText: {
+  timeText: {
     fontSize: 16,
     color: colors.DARK,
   },
