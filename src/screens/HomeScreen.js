@@ -1,5 +1,6 @@
+// HomeScreen.js
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import colors from '../misc/GlobalStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -27,9 +28,9 @@ const HomeScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [notes, setNotes] = useState([]);
   const [filteredNotes, setFilteredNotes] = useState([]);
+  const [searchText, setSearchText] = useState('');
 
   useEffect(() => {
-    // AsyncStorage.clear();
     loadName();
     loadNotes();
   }, [isFocused]); 
@@ -66,8 +67,6 @@ const HomeScreen = () => {
       console.error('Error saving notes:', error);
     }
   };
-
-  const [searchText, setSearchText] = useState('');
 
   const handleSearch = (text) => {
     setSearchText(text);
@@ -138,53 +137,55 @@ const HomeScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.greetingContainer}>
-        <Text style={styles.greetingText}>
-          {greeting}, {name ? name : 'Friend'}
-        </Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <View style={styles.greetingContainer}>
+          <Text style={styles.greetingText}>
+            {greeting}, {name ? name : 'Friend'}
+          </Text>
+        </View>
+        {notes.length > 0 && (
+          <SearchComponent searchText={searchText} handleSearch={handleSearch} />
+        )}
+        {filteredNotes.length === 0 && searchText.length > 0 && (
+          <View style={styles.centeredTextContainer}>
+            <Text style={styles.centeredText}>Not Found</Text>
+          </View>
+        )}
+        {notes.length === 0 && (
+          <View style={styles.centeredTextContainer}>
+            <Text style={styles.centeredText}>ADD NOTES</Text>
+          </View>
+        )}
+        {filteredNotes.length > 0 && (
+          <>
+            <TouchableOpacity style={styles.addButton} onPress={handleAddNote}>
+              <Icon name="plus" size={24} color="white" />
+            </TouchableOpacity>
+            <AddNoteModal
+              visible={modalVisible}
+              onClose={handleCloseModal}
+              onSave={handleSaveNote}
+            />
+            <FlatList
+              data={filteredNotes}
+              renderItem={({ item }) => (
+                <TouchableOpacity onPress={() => navigateToNoteDetails(item)}>
+                  <Note
+                    title={item.title}
+                    description={item.description}
+                    onDelete={() => handleDeleteNote(item.id)} 
+                  />
+                </TouchableOpacity>
+              )}
+              keyExtractor={(item) => item.id}
+              numColumns={2}
+              columnWrapperStyle={styles.columnWrapper}
+            />
+          </>
+        )}
       </View>
-      {notes.length > 0 && (
-        <SearchComponent searchText={searchText} handleSearch={handleSearch} />
-      )}
-      {filteredNotes.length === 0 && searchText.length > 0 && (
-        <View style={styles.centeredTextContainer}>
-          <Text style={styles.centeredText}>Not Found</Text>
-        </View>
-      )}
-      {notes.length === 0 && (
-        <View style={styles.centeredTextContainer}>
-          <Text style={styles.centeredText}>ADD NOTES</Text>
-        </View>
-      )}
-      {filteredNotes.length > 0 && (
-        <>
-          <TouchableOpacity style={styles.addButton} onPress={handleAddNote}>
-            <Icon name="plus" size={24} color="white" />
-          </TouchableOpacity>
-          <AddNoteModal
-            visible={modalVisible}
-            onClose={handleCloseModal}
-            onSave={handleSaveNote}
-          />
-          <FlatList
-            data={filteredNotes}
-            renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => navigateToNoteDetails(item)}>
-                <Note
-                  title={item.title}
-                  description={item.description}
-                  onDelete={() => handleDeleteNote(item.id)} 
-                />
-              </TouchableOpacity>
-            )}
-            keyExtractor={(item) => item.id}
-            numColumns={2}
-            columnWrapperStyle={styles.columnWrapper}
-          />
-        </>
-      )}
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 
