@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SplashScreen = () => {
     const navigation = useNavigation();
@@ -10,12 +11,24 @@ const SplashScreen = () => {
     const textAnimation = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
-        setTimeout(() => {
-            navigation.navigate('HomeScreen');
-        }, 6000);
-
+        checkUserExistence();
         startAnimations();
     }, []);
+
+    const checkUserExistence = async () => {
+        try {
+            const name = await AsyncStorage.getItem('name');
+            if (name) {
+                setTimeout(() => {
+                    navigation.navigate('HomeScreen');
+                }, 6000); // Delay navigation for 6 seconds
+            } else {
+                navigation.navigate('IntroScreen');
+            }
+        } catch (error) {
+            console.error('Error checking user existence:', error);
+        }
+    };
 
     const startAnimations = () => {
         Animated.parallel([
@@ -26,7 +39,7 @@ const SplashScreen = () => {
             }),
             Animated.timing(textAnimation, {
                 toValue: 1,
-                duration: 2000,
+                duration: 6000, 
                 useNativeDriver: true,
             }),
         ]).start();
