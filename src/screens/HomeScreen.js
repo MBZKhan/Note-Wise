@@ -280,8 +280,8 @@ const styles = StyleSheet.create({
   },
   viewToggle: {
     position: 'absolute',
-    bottom: 20,
-    right: 100,
+    bottom: 90,
+    right: 20,
     backgroundColor: colors.SECONDARY,
     borderRadius: 30,
     width: 60,
