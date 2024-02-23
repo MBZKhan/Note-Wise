@@ -7,11 +7,15 @@ import { useNavigation, useIsFocused } from '@react-navigation/native';
 import SearchComponent from '../components/SearchComponent';
 import AddNoteModal from '../components/AddNoteModal';
 import Note from '../components/Note';
+import Note2 from '../components/Note2';
 
 const HomeScreen = () => {
   const { navigate } = useNavigation();
   const isFocused = useIsFocused(); 
   const flatListRef = useRef(null); 
+  const [viewType, setViewType] = useState('list');
+  const [listKey, setListKey] = useState('listKey');
+  const [isListView, setIsListView] = useState(true);
 
   const currentHour = new Date().getHours();
   let greeting = '';
@@ -151,6 +155,8 @@ const HomeScreen = () => {
     }
   };
 
+  
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
@@ -159,6 +165,14 @@ const HomeScreen = () => {
             {greeting}, {name ? name : 'Friend'}
           </Text>
         </View>
+        <TouchableOpacity
+          style={[styles.viewToggle, { backgroundColor: viewType === 'list' ? colors.SECONDARY : colors.SECONDARY }]}
+          onPress={() => {
+            setViewType(viewType === 'list' ? 'grid' : 'list'); 
+            setListKey(prevKey => prevKey === 'gridKey' ? 'listKey' : 'gridKey'); 
+          }}>
+          <Icon name={viewType === 'list' ? 'th-large' : 'bars'} size={24} color="white" />
+        </TouchableOpacity>
         {notes.length > 0 && (
           <SearchComponent searchText={searchText} handleSearch={handleSearch} />
         )}
@@ -180,22 +194,41 @@ const HomeScreen = () => {
           onClose={handleCloseModal}
           onSave={handleSaveNote}
         />
-        <FlatList
-          ref={flatListRef} 
-          data={filteredNotes}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => navigateToNoteDetails(item)}>
-              <Note
-                title={item.title}
-                description={item.description}
-                onDelete={() => handleDeleteNote(item.id)} 
-              />
-            </TouchableOpacity>
-          )}
-          keyExtractor={(item) => item.id}
-          numColumns={2}
-          columnWrapperStyle={styles.columnWrapper}
-        />
+        {viewType === 'grid' ? (
+          <FlatList
+            key={listKey} 
+            ref={flatListRef}
+            data={filteredNotes}
+            renderItem={({ item }) => (
+              <TouchableOpacity onPress={() => navigateToNoteDetails(item)}>
+                <Note
+                  title={item.title}
+                  description={item.description}
+                  onDelete={() => handleDeleteNote(item.id)}
+                />
+              </TouchableOpacity>
+            )}
+            keyExtractor={(item) => item.id}
+            numColumns={2}
+            columnWrapperStyle={styles.columnWrapper}
+          />
+        ) : (
+          <FlatList
+            key={listKey} 
+            ref={flatListRef}
+            data={filteredNotes}
+            renderItem={({ item }) => (
+              <TouchableOpacity onPress={() => navigateToNoteDetails(item)}>
+                <Note2
+                  title={item.title}
+                  description={item.description}
+                  onDelete={() => handleDeleteNote(item.id)}
+                />
+              </TouchableOpacity>
+            )}
+            keyExtractor={(item) => item.id}
+          />
+        )}
       </View>
     </TouchableWithoutFeedback>
   );
@@ -238,6 +271,18 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 20,
     right: 20,
+    backgroundColor: colors.SECONDARY,
+    borderRadius: 30,
+    width: 60,
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 2,
+  },
+  viewToggle: {
+    position: 'absolute',
+    bottom: 20,
+    right: 100,
     backgroundColor: colors.SECONDARY,
     borderRadius: 30,
     width: 60,

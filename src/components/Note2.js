@@ -4,8 +4,8 @@ import colors from '../misc/GlobalStyles';
 
 const windowWidth = Dimensions.get('window').width;
 
-const Note = ({ title, description }) => {
-  const noteWidth = (windowWidth / 2) - 40; 
+const Note2 = ({ title, description }) => {
+  const noteWidth = windowWidth * 0.85;
   return (
     <View style={[styles.container, { width: noteWidth }]}>
       <Text numberOfLines={2} style={styles.title}>{title}</Text>
@@ -36,4 +36,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Note;
+export default Note2;
