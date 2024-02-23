@@ -15,7 +15,6 @@ const HomeScreen = () => {
   const flatListRef = useRef(null); 
   const [viewType, setViewType] = useState('list');
   const [listKey, setListKey] = useState('listKey');
-  const [isListView, setIsListView] = useState(true);
 
   const currentHour = new Date().getHours();
   let greeting = '';
